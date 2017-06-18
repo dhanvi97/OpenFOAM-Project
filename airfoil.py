@@ -1,10 +1,23 @@
+#!/usr/bin/python
 import numpy as np
+import subprocess as s
+from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
+from PyFoam.Basics.DataStructures import DictProxy
+from PyFoam.Applications.ChangeBoundaryType import ChangeBoundaryType
+from PyFoam.Execution.BasicRunner import BasicRunner
 
-M = 2	#Camber indicator
-P = 4	#Position of maximum camber
+M = 1	#Camber indicator
+P = 3	#Position of maximum camber
 T = 12	#Thickness
 pi = 3.141592
 #Taking chord thickness as 1, for simplicity in calculations
+
+with open("M", "r") as f, open("P", "r") as g:
+	for line in f:
+		M = int(line)
+	for line in g:
+		P = int(line)
+		
 
 with open("points", "w") as f:
 	m = M/100.
@@ -32,7 +45,7 @@ with open("points", "w") as f:
 			ys = 0.0
 		f.write(str(xs) + " " + str(ys) + "\n")
 		
-with open("points", "rw") as input_file, open('new_file' , 'w') as f:
+with open("points", "rw") as input_file, open('airfoil.geo' , 'w') as f:
 	#-----------------------------------------------------------------------------
 	# Module for generating points from dat file								 |
 	#-----------------------------------------------------------------------------
@@ -110,4 +123,27 @@ with open("points", "rw") as input_file, open('new_file' , 'w') as f:
 	f.write("Physical Volume (\"internal\") = {1};\n")
 	f.write("\n")
 
-	
+s.call(["gmsh", "-3", "airfoil.geo"])
+s.call(["gmshToFoam", "airfoil.msh"])
+ChangeBoundaryType("./ frontAndBack empty")
+ChangeBoundaryType("./ walls wall")
+pproc = "postProcessing/forceCoeffs/0/forceCoeffs_1.dat"
+#Run the solver
+BasicRunner(argv=["simpleFoam","-case","."]).start()
+#Store the Cl/Cd ratio in a dummy file
+cl = 0
+cd = 0
+count = 0
+with open(pproc, "r") as p:
+	for i,line in enumerate(p):
+		if i > 9:
+			cl_i = abs(float(line.split()[3]))
+			cd_i = abs(float(line.split()[2]))
+			cl = cl_i
+			cd = cd_i
+			#count = count + 1
+cl = float(cl)
+cd = float(cd)
+ratio = cl/cd
+with open("ratio", "w") as f:
+	f.write(str(ratio))

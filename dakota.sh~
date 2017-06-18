@@ -7,18 +7,16 @@
 
 # Dakota change the parameters in this file
 # ------------------------------------------------------------------------------
-dprepro $1 theta.dakota theta
-dprepro $1 vel.dakota vel
+dprepro $1 M.dakota M
+dprepro $1 P.dakota P
    
     # Get angle 
     #---------------------------------------------------------------------------
-    theta=`head theta`
-    theta=`echo ${theta} | sed -e 's/[eE]+*/\\*10\\^/'`
-    theta=`echo "scale=6; $theta/1" | bc`
+    M=`head M`
+    M=`echo "scale=6; $M/1" | bc`
     
-    vel=`head vel`
-    vel=`echo ${vel} | sed -e 's/[eE]+*/\\*10\\^/'`
-    vel=`echo "scale=6; $vel/1" | bc`
+    P=`head P`
+    P=`echo "scale=6; $P/1" | bc`
 
 
     # Get the loop number
@@ -26,8 +24,8 @@ dprepro $1 vel.dakota vel
     loopNumber=`cat .optimizationLoop`
     >&2 echo  "   ++++ Optimisation loop $loopNumber"
     >&2 echo  "   |"
-    >&2 echo  "   |--> theta = $theta"
-    >&2 echo  "   |--> Velocity = $vel"
+    >&2 echo  "   |--> M = $M"
+    >&2 echo  "   |--> P = $P"
 
     # Make loop folder for log files
     #---------------------------------------------------------------------------
@@ -37,7 +35,7 @@ dprepro $1 vel.dakota vel
 
     #Run python script
     #---------------------------------------------------------------------------
-    ./NACArun.py
+    ./airfoil.py
 
 
     # Get ratio  (average of inlet / outlet would be better here)

@@ -9,17 +9,16 @@ environment
         tabular_graphics_file = 'dakotaData.dat'
 
 method
-    multidim_parameter_study
-    partitions = 8 8
+    mesh_adaptive_search
 
 model
     single
 
 variables
-    continuous_design = 2
-    	lower_bounds 30 25
-    	upper_bounds 70 80	 
-        descriptors 'theta' 'velocity' 
+	discrete_design_range  = 2
+	lower_bounds 1 1
+	upper_bounds 4 9
+	descriptors 'M' 'P' 
 
 interface
     fork

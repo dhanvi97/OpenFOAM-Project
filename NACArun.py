@@ -7,8 +7,9 @@ from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
 from PyFoam.Execution.BasicRunner import BasicRunner
 from PyFoam.Basics.DataStructures import DictProxy
 
-vel = ParsedParameterFile("0/U")
+#vel = ParsedParameterFile("0/U")
 pproc = "postProcessing/forceCoeffs/0/forceCoeffs_1.dat"
+'''
 #Obtain Value of Velocity from dummy vel file
 U = 0
 with open("vel", "r") as f:
@@ -29,6 +30,7 @@ Uy = U*np.sin(theta*pi/180.)
 new_vel = "uniform ("+ str(Ux) + " " + str(Uy) + " 0)"
 vel["internalField"] = new_vel
 vel.writeFile()
+'''
 #Run the solver
 BasicRunner(argv=["simpleFoam","-case","."]).start()
 #Store the Cl/Cd ratio in a dummy file
