@@ -1,0 +1,40 @@
+# Dakota Input File
+#
+# Automatic Process Chain Simulation
+#-----------------------------------------------------------------------------
+
+
+environment
+    tabular_graphics_data
+        tabular_graphics_file = 'dakotaData.dat'
+
+method
+    multidim_parameter_study
+    partitions = 8 8
+
+model
+    single
+
+variables
+    continuous_design = 2
+    	lower_bounds 30 25
+    	upper_bounds 70 80	 
+        descriptors 'theta' 'vel' 
+
+interface
+    fork
+        analysis_driver = 'dakota.sh'
+        parameters_file = 'params.in'
+        results_file    = 'results.out'
+    aprepro
+
+
+responses
+    objective_functions = 1
+    numerical_gradients
+        method_source dakota
+        interval_type central 
+       fd_gradient_step_size = 0.1
+    no_hessians
+
+#-----------------------------------------------------------------------------

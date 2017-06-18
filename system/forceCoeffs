@@ -1,0 +1,43 @@
+forces
+{
+    type                forces;
+    functionObjectLibs  ("libforces.so");
+    outputControl       timeStep;
+    outputInterval      1;
+     
+    patches             ( walls );
+    p               	p;
+    U              		U;
+    rhoName             rhoInf;
+    log                 true;
+     
+    CofR                (0.25 0 0);
+     
+    rho              	rhoInf;
+    rhoInf				1;
+}
+ 
+ 
+forceCoeffs
+{
+    type                forceCoeffs;
+    functionObjectLibs  ( "libforces.so" );
+    outputControl       timeStep;
+    outputInterval      1;
+ 
+    patches             ( walls );
+    p     		        p;
+    U               	U;
+    rho             	rhoInf;
+    log                 true;
+     
+    liftDir             (0 1 0);
+    dragDir             (-1 0 0);
+    CofR                (0.25 0 0);
+    pitchAxis           (0 0 1);
+     
+    magUInf             40;
+    rhoInf              1;
+    lRef                1;
+    Aref                1;
+}

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+cd ${0%/*} || exit 1
+clear
+
+
+dakotaInputFile="system/dakotaDict"
+dakotaOutputFile="dakotaLog"
+optimizationLogFile="optimizationLog"
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Lets start doing DAKOTA the work for us"
+echo -e "     ++ Input file for dakota: $dakotaInputFile"
+echo -e "     ++ Output file for dakota: $dakotaOutputFile"
+echo -e "     ++ Log file: $optimizationLogFile"
+
+#### DAKOTA ####
+if [ `which dakota | grep 'dakota' -c` == 1 ];
+then
+    echo "1" > .optimizationLoop
+    dakota -i $dakotaInputFile -o $dakotaOutputFile > $optimizationLogFile &
+    echo -e "   - DAKOTA is running ...\n"
+    wait
+else
+    echo "    - No dakota application available, skip optimisation"
+fi
+
+best=`grep 'Best data' dakotaLog | cut -d' ' -f8`
+echo -e "   - Best result got with optimization $best"
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Simulation successfully ended\n\n"
+
+
+#------------------------------------------------------------------------------
